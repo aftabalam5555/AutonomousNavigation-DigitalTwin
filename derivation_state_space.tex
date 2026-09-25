@@ -1,0 +1,1330 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{array}
+\usepackage{mathtools}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+\title{\textbf{Derivation of State-Space Matrix for MPC Control}}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+The following derivation follows the sequence and notation of the
+handwritten derivation. The factor of $2$ is retained consistently in
+the front and rear lateral tire forces, and the required signs in the
+lateral-velocity and yaw-rate equations are corrected.
+
+%====================================================================
+\section{Vehicle Kinematic Equations}
+
+The vehicle states are the global longitudinal position $X$, lateral
+position $Y$, yaw angle $\psi$, longitudinal velocity $v_x$, lateral
+velocity $v_y$, and yaw rate $r$.
+
+The global longitudinal-position equation is
+
+\begin{equation}
+\boxed{
+\dot X=v_x\cos\psi-v_y\sin\psi
+}.
+\end{equation}
+
+The global lateral-position equation is
+
+\begin{equation}
+\boxed{
+\dot Y=v_x\sin\psi+v_y\cos\psi
+}.
+\end{equation}
+
+The yaw-rate relation is
+
+\begin{equation}
+\boxed{
+\dot\psi=r
+}.
+\end{equation}
+
+The longitudinal vehicle dynamics used in the handwritten model are
+
+\begin{equation}
+\boxed{
+\dot v_x
+=
+a_{cmd}
+-\mu_{rr}g\cos\theta
+-g\sin\theta
++v_yr
+}.
+\end{equation}
+
+Here, $\mu_{rr}g\cos\theta$ represents the rolling/frictional resistance,
+$g\sin\theta$ represents the road-grade contribution, and $v_yr$ is the
+body-frame coupling caused by yaw motion.
+
+%====================================================================
+\section{Front and Rear Normal Loads}
+
+The front normal force is
+
+\begin{equation}
+\boxed{
+F_{zf}
+=
+\frac{
+mg\cos\theta\,a_2
+-
+mh\left(\dot v_x+g\sin\theta\right)
+}
+{a_1+a_2}
+}.
+\end{equation}
+
+Similarly, the rear normal force is
+
+\begin{equation}
+\boxed{
+F_{zr}
+=
+\frac{
+mg\cos\theta\,a_1
++
+mh\left(\dot v_x+g\sin\theta\right)
+}
+{a_1+a_2}
+}.
+\end{equation}
+
+For the nominal condition,
+
+\begin{equation}
+F_{zf,\mathrm{nom}}
+=
+\frac{mga_2}{a_1+a_2},
+\end{equation}
+
+and
+
+\begin{equation}
+F_{zr,\mathrm{nom}}
+=
+\frac{mga_1}{a_1+a_2}.
+\end{equation}
+
+The front cornering stiffness is
+
+\begin{equation}
+C_{\alpha f}
+=
+C_{\alpha f,\mathrm{nom}}
+\left(
+\frac{F_{zf}}
+{F_{zf,\mathrm{nom}}}
+\right).
+\end{equation}
+
+Similarly,
+
+\begin{equation}
+C_{\alpha r}
+=
+C_{\alpha r,\mathrm{nom}}
+\left(
+\frac{F_{zr}}
+{F_{zr,\mathrm{nom}}}
+\right).
+\end{equation}
+
+The nominal values appearing in the handwritten derivation are
+
+\begin{equation}
+C_{\alpha f,\mathrm{nom}}
+=
+57{,}000\;\mathrm{N/rad},
+\end{equation}
+
+and
+
+\begin{equation}
+C_{\alpha r,\mathrm{nom}}
+=
+52{,}000\;\mathrm{N/rad}.
+\end{equation}
+
+%====================================================================
+\section{Front and Rear Slip Angles}
+
+The front slip angle is
+
+\begin{equation}
+\boxed{
+\alpha_f
+=
+\delta
+-
+\frac{v_y+a_1r}{v_x}
+}.
+\end{equation}
+
+The rear slip angle is
+
+\begin{equation}
+\boxed{
+\alpha_r
+=
+-\frac{v_y-a_2r}{v_x}
+=
+\frac{-v_y+a_2r}{v_x}
+}.
+\end{equation}
+
+%====================================================================
+\section{Lateral Tire Forces}
+
+Since the cornering stiffnesses are defined for individual tires, two
+tires contribute at each axle.
+
+Therefore,
+
+\begin{equation}
+\boxed{
+F_{yf}=2C_{\alpha f}\alpha_f
+},
+\end{equation}
+
+and
+
+\begin{equation}
+\boxed{
+F_{yr}=2C_{\alpha r}\alpha_r
+}.
+\end{equation}
+
+%====================================================================
+\section{Newton--Euler Equations in the Vehicle-Fixed Frame}
+
+Applying Newton's second law in the lateral direction,
+
+\begin{equation}
+\boxed{
+m\left(\dot v_y+v_xr\right)
+=
+F_{yf}+F_{yr}
+}.
+\end{equation}
+
+Applying the yaw-moment equation about the center of gravity,
+
+\begin{equation}
+\boxed{
+I_z\dot r
+=
+a_1F_{yf}-a_2F_{yr}
+}.
+\end{equation}
+
+%====================================================================
+\subsection{Detailed Derivation of the Lateral-Velocity Equation}
+
+Starting from
+
+\begin{equation}
+m\left(\dot v_y+v_xr\right)
+=
+F_{yf}+F_{yr},
+\end{equation}
+
+substitute
+
+\begin{equation}
+F_{yf}=2C_{\alpha f}\alpha_f,
+\qquad
+F_{yr}=2C_{\alpha r}\alpha_r.
+\end{equation}
+
+Thus,
+
+\begin{equation}
+m\left(\dot v_y+v_xr\right)
+=
+2C_{\alpha f}\alpha_f
++
+2C_{\alpha r}\alpha_r.
+\end{equation}
+
+Expanding the left-hand side,
+
+\begin{equation}
+m\dot v_y
++
+mv_xr
+=
+2C_{\alpha f}\alpha_f
++
+2C_{\alpha r}\alpha_r.
+\end{equation}
+
+Moving $mv_xr$ to the right-hand side,
+
+\begin{equation}
+m\dot v_y
+=
+2C_{\alpha f}\alpha_f
++
+2C_{\alpha r}\alpha_r
+-
+mv_xr.
+\end{equation}
+
+Dividing by $m$,
+
+\begin{equation}
+\dot v_y
+=
+\frac{2C_{\alpha f}}{m}\alpha_f
++
+\frac{2C_{\alpha r}}{m}\alpha_r
+-
+v_xr.
+\end{equation}
+
+Now,
+
+\begin{equation}
+\alpha_f
+=
+\delta
+-
+\frac{v_y+a_1r}{v_x},
+\end{equation}
+
+and
+
+\begin{equation}
+\alpha_r
+=
+\frac{-v_y+a_2r}{v_x}.
+\end{equation}
+
+Substituting these equations,
+
+\begin{align}
+\dot v_y
+={}&
+\frac{2C_{\alpha f}}{m}
+\left(
+\delta-\frac{v_y+a_1r}{v_x}
+\right)
+\nonumber\\
+&+
+\frac{2C_{\alpha r}}{m}
+\left(
+\frac{-v_y+a_2r}{v_x}
+\right)
+-v_xr.
+\end{align}
+
+Expanding the front term,
+
+\begin{align}
+\frac{2C_{\alpha f}}{m}
+\left(
+\delta-\frac{v_y+a_1r}{v_x}
+\right)
+={}&
+\frac{2C_{\alpha f}}{m}\delta
+-
+\frac{2C_{\alpha f}}{mv_x}v_y
+\nonumber\\
+&-
+\frac{2a_1C_{\alpha f}}{mv_x}r.
+\end{align}
+
+Expanding the rear term,
+
+\begin{equation}
+\frac{2C_{\alpha r}}{m}
+\left(
+\frac{-v_y+a_2r}{v_x}
+\right)
+=
+-\frac{2C_{\alpha r}}{mv_x}v_y
++
+\frac{2a_2C_{\alpha r}}{mv_x}r.
+\end{equation}
+
+Therefore,
+
+\begin{align}
+\dot v_y
+={}&
+\frac{2C_{\alpha f}}{m}\delta
+-\frac{2C_{\alpha f}}{mv_x}v_y
+-\frac{2a_1C_{\alpha f}}{mv_x}r
+\nonumber\\
+&-\frac{2C_{\alpha r}}{mv_x}v_y
++\frac{2a_2C_{\alpha r}}{mv_x}r
+-v_xr.
+\end{align}
+
+Collecting the $v_y$ terms,
+
+\begin{align}
+&
+-\frac{2C_{\alpha f}}{mv_x}v_y
+-
+\frac{2C_{\alpha r}}{mv_x}v_y
+\nonumber\\
+&=
+-v_y
+\left(
+\frac{2C_{\alpha f}+2C_{\alpha r}}{mv_x}
+\right).
+\end{align}
+
+Collecting the $r$ terms,
+
+\begin{align}
+&
+-\frac{2a_1C_{\alpha f}}{mv_x}r
++
+\frac{2a_2C_{\alpha r}}{mv_x}r
+-v_xr
+\nonumber\\
+&=
+r
+\left(
+\frac{-2a_1C_{\alpha f}+2a_2C_{\alpha r}}
+{mv_x}
+-v_x
+\right).
+\end{align}
+
+Therefore,
+
+\begin{equation}
+\boxed{
+\dot v_y
+=
+-v_y
+\left(
+\frac{2C_{\alpha f}+2C_{\alpha r}}
+{mv_x}
+\right)
++
+r
+\left(
+\frac{-2a_1C_{\alpha f}+2a_2C_{\alpha r}}
+{mv_x}
+-v_x
+\right)
++
+\frac{2C_{\alpha f}}{m}\delta
+}.
+\end{equation}
+
+The front-axle yaw-rate contribution has a negative sign because the front
+slip-angle equation contains
+
+\begin{equation}
+-\frac{a_1r}{v_x}.
+\end{equation}
+
+%====================================================================
+\subsection{Detailed Derivation of the Yaw-Rate Equation}
+
+Starting from
+
+\begin{equation}
+I_z\dot r
+=
+a_1F_{yf}
+-
+a_2F_{yr},
+\end{equation}
+
+substitute
+
+\begin{equation}
+F_{yf}=2C_{\alpha f}\alpha_f,
+\end{equation}
+
+and
+
+\begin{equation}
+F_{yr}=2C_{\alpha r}\alpha_r.
+\end{equation}
+
+Hence,
+
+\begin{equation}
+I_z\dot r
+=
+a_1\left(2C_{\alpha f}\alpha_f\right)
+-
+a_2\left(2C_{\alpha r}\alpha_r\right).
+\end{equation}
+
+Therefore,
+
+\begin{equation}
+I_z\dot r
+=
+2a_1C_{\alpha f}\alpha_f
+-
+2a_2C_{\alpha r}\alpha_r.
+\end{equation}
+
+Substituting the front and rear slip angles,
+
+\begin{align}
+I_z\dot r
+={}&
+2a_1C_{\alpha f}
+\left(
+\delta-\frac{v_y+a_1r}{v_x}
+\right)
+\nonumber\\
+&-
+2a_2C_{\alpha r}
+\left(
+\frac{-v_y+a_2r}{v_x}
+\right).
+\end{align}
+
+Expanding the front contribution,
+
+\begin{align}
+2a_1C_{\alpha f}
+\left(
+\delta-\frac{v_y+a_1r}{v_x}
+\right)
+={}&
+2a_1C_{\alpha f}\delta
+-
+\frac{2a_1C_{\alpha f}}{v_x}v_y
+\nonumber\\
+&-
+\frac{2a_1^2C_{\alpha f}}{v_x}r.
+\end{align}
+
+Expanding the rear contribution,
+
+\begin{equation}
+-2a_2C_{\alpha r}
+\left(
+\frac{-v_y+a_2r}{v_x}
+\right)
+=
++
+\frac{2a_2C_{\alpha r}}{v_x}v_y
+-
+\frac{2a_2^2C_{\alpha r}}{v_x}r.
+\end{equation}
+
+Hence,
+
+\begin{align}
+I_z\dot r
+={}&
+2a_1C_{\alpha f}\delta
+-
+\frac{2a_1C_{\alpha f}}{v_x}v_y
+-
+\frac{2a_1^2C_{\alpha f}}{v_x}r
+\nonumber\\
+&+
+\frac{2a_2C_{\alpha r}}{v_x}v_y
+-
+\frac{2a_2^2C_{\alpha r}}{v_x}r.
+\end{align}
+
+Collecting the $v_y$ terms,
+
+\begin{equation}
+-\frac{2a_1C_{\alpha f}}{v_x}v_y
++
+\frac{2a_2C_{\alpha r}}{v_x}v_y
+=
+\frac{-2a_1C_{\alpha f}+2a_2C_{\alpha r}}
+{v_x}v_y.
+\end{equation}
+
+Collecting the $r$ terms,
+
+\begin{align}
+&
+-\frac{2a_1^2C_{\alpha f}}{v_x}r
+-
+\frac{2a_2^2C_{\alpha r}}{v_x}r
+\nonumber\\
+&=
+-\frac{
+2a_1^2C_{\alpha f}
++
+2a_2^2C_{\alpha r}
+}{v_x}r.
+\end{align}
+
+Therefore,
+
+\begin{align}
+I_z\dot r
+={}&
+2a_1C_{\alpha f}\delta
++
+\frac{-2a_1C_{\alpha f}+2a_2C_{\alpha r}}
+{v_x}v_y
+\nonumber\\
+&-
+\frac{
+2a_1^2C_{\alpha f}
++
+2a_2^2C_{\alpha r}
+}{v_x}r.
+\end{align}
+
+Dividing throughout by $I_z$,
+
+\begin{equation}
+\boxed{
+\dot r
+=
+\frac{2a_1C_{\alpha f}}{I_z}\delta
++
+\frac{-2a_1C_{\alpha f}+2a_2C_{\alpha r}}
+{I_zv_x}v_y
+-
+\frac{
+2a_1^2C_{\alpha f}
++
+2a_2^2C_{\alpha r}
+}
+{I_zv_x}r
+}.
+\end{equation}
+
+%====================================================================
+\section{Continuous State-Space Representation}
+
+Using the structure shown in the handwritten derivation,
+
+\begin{equation}
+\boxed{
+\dot{\bm{x}}
+=
+A\bm{x}
++
+B\bm{u}
++
+B_{ud}\bm{d}_{um}
++
+B_{md}\bm{d}_m
+}.
+\end{equation}
+
+The output equation is
+
+\begin{equation}
+\boxed{
+\bm{y}
+=
+C\bm{x}
++
+D\bm{u}
+}.
+\end{equation}
+
+The state vector is
+
+\begin{equation}
+\boxed{
+\bm{x}
+=
+\begin{bmatrix}
+X\\
+Y\\
+\psi\\
+v_x\\
+v_y\\
+r
+\end{bmatrix}
+}.
+\end{equation}
+
+The control input is
+
+\begin{equation}
+\boxed{
+\bm{u}
+=
+\begin{bmatrix}
+\delta\\
+a_{cmd}
+\end{bmatrix}
+}.
+\end{equation}
+
+For linearization around an operating point $(\bm{x}_0,\bm{u}_0)$,
+
+\begin{equation}
+\boxed{
+A
+=
+\left.
+\frac{\partial f}{\partial\bm{x}}
+\right|_{\bm{x}_0,\bm{u}_0}
+},
+\end{equation}
+
+and
+
+\begin{equation}
+\boxed{
+B
+=
+\left.
+\frac{\partial f}{\partial\bm{u}}
+\right|_{\bm{x}_0,\bm{u}_0}
+}.
+\end{equation}
+
+%====================================================================
+\section{Derivation of the $A$ Matrix}
+
+From
+
+\begin{equation}
+\dot X
+=
+v_x\cos\psi
+-
+v_y\sin\psi,
+\end{equation}
+
+the nonzero partial derivatives are
+
+\begin{equation}
+\frac{\partial\dot X}{\partial\psi}
+=
+-v_x\sin\psi
+-v_y\cos\psi,
+\end{equation}
+
+\begin{equation}
+\frac{\partial\dot X}{\partial v_x}
+=
+\cos\psi,
+\end{equation}
+
+and
+
+\begin{equation}
+\frac{\partial\dot X}{\partial v_y}
+=
+-\sin\psi.
+\end{equation}
+
+Hence,
+
+\begin{equation}
+A_{13}
+=
+-v_{x0}\sin\psi_0
+-v_{y0}\cos\psi_0,
+\end{equation}
+
+\begin{equation}
+A_{14}
+=
+\cos\psi_0,
+\end{equation}
+
+and
+
+\begin{equation}
+A_{15}
+=
+-\sin\psi_0.
+\end{equation}
+
+From
+
+\begin{equation}
+\dot Y
+=
+v_x\sin\psi
++
+v_y\cos\psi,
+\end{equation}
+
+we obtain
+
+\begin{equation}
+\frac{\partial\dot Y}{\partial\psi}
+=
+v_x\cos\psi
+-v_y\sin\psi,
+\end{equation}
+
+\begin{equation}
+\frac{\partial\dot Y}{\partial v_x}
+=
+\sin\psi,
+\end{equation}
+
+and
+
+\begin{equation}
+\frac{\partial\dot Y}{\partial v_y}
+=
+\cos\psi.
+\end{equation}
+
+Hence,
+
+\begin{equation}
+A_{23}
+=
+v_{x0}\cos\psi_0
+-v_{y0}\sin\psi_0,
+\end{equation}
+
+\begin{equation}
+A_{24}
+=
+\sin\psi_0,
+\end{equation}
+
+and
+
+\begin{equation}
+A_{25}
+=
+\cos\psi_0.
+\end{equation}
+
+Since
+
+\begin{equation}
+\dot\psi=r,
+\end{equation}
+
+we obtain
+
+\begin{equation}
+\boxed{
+A_{36}=1
+}.
+\end{equation}
+
+For
+
+\begin{equation}
+\dot v_x
+=
+a_{cmd}
+-\mu_{rr}g\cos\theta
+-g\sin\theta
++v_yr,
+\end{equation}
+
+the relevant state derivatives are
+
+\begin{equation}
+\frac{\partial\dot v_x}{\partial v_y}
+=
+r,
+\end{equation}
+
+and
+
+\begin{equation}
+\frac{\partial\dot v_x}{\partial r}
+=
+v_y.
+\end{equation}
+
+Thus,
+
+\begin{equation}
+A_{45}=r_0,
+\end{equation}
+
+and
+
+\begin{equation}
+A_{46}=v_{y0}.
+\end{equation}
+
+For the lateral equation,
+
+\begin{align}
+\dot v_y
+={}&
+-\frac{2C_{\alpha f}+2C_{\alpha r}}
+{mv_x}v_y
+\nonumber\\
+&+
+\left(
+\frac{-2a_1C_{\alpha f}+2a_2C_{\alpha r}}
+{mv_x}
+-v_x
+\right)r
++
+\frac{2C_{\alpha f}}{m}\delta.
+\end{align}
+
+Differentiating with respect to $v_x$,
+
+\begin{align}
+\frac{\partial\dot v_y}{\partial v_x}
+={}&
+\frac{
+(2C_{\alpha f}+2C_{\alpha r})v_y
+}
+{mv_x^2}
+\nonumber\\
+&-
+\frac{
+(-2a_1C_{\alpha f}+2a_2C_{\alpha r})r
+}
+{mv_x^2}
+-r.
+\end{align}
+
+Therefore,
+
+\begin{equation}
+\boxed{
+A_{54}
+=
+\frac{
+(2C_{\alpha f}+2C_{\alpha r})v_{y0}
+-
+(-2a_1C_{\alpha f}+2a_2C_{\alpha r})r_0
+}
+{mv_{x0}^2}
+-r_0
+}.
+\end{equation}
+
+Differentiating with respect to $v_y$,
+
+\begin{equation}
+\boxed{
+A_{55}
+=
+-\frac{
+2C_{\alpha f}+2C_{\alpha r}
+}
+{mv_{x0}}
+}.
+\end{equation}
+
+Differentiating with respect to $r$,
+
+\begin{equation}
+\boxed{
+A_{56}
+=
+\frac{
+-2a_1C_{\alpha f}
++
+2a_2C_{\alpha r}
+}
+{mv_{x0}}
+-v_{x0}
+}.
+\end{equation}
+
+For the yaw-rate equation,
+
+\begin{align}
+\dot r
+={}&
+\frac{
+-2a_1C_{\alpha f}
++
+2a_2C_{\alpha r}
+}
+{I_zv_x}v_y
+\nonumber\\
+&-
+\frac{
+2a_1^2C_{\alpha f}
++
+2a_2^2C_{\alpha r}
+}
+{I_zv_x}r
++
+\frac{2a_1C_{\alpha f}}{I_z}\delta.
+\end{align}
+
+Differentiating with respect to $v_x$,
+
+\begin{align}
+\frac{\partial\dot r}{\partial v_x}
+={}&
+-\frac{
+(-2a_1C_{\alpha f}+2a_2C_{\alpha r})v_y
+}
+{I_zv_x^2}
+\nonumber\\
+&+
+\frac{
+(2a_1^2C_{\alpha f}+2a_2^2C_{\alpha r})r
+}
+{I_zv_x^2}.
+\end{align}
+
+Thus,
+
+\begin{equation}
+\boxed{
+A_{64}
+=
+\frac{
+-(-2a_1C_{\alpha f}+2a_2C_{\alpha r})v_{y0}
++
+(2a_1^2C_{\alpha f}+2a_2^2C_{\alpha r})r_0
+}
+{I_zv_{x0}^2}
+}.
+\end{equation}
+
+Differentiating with respect to $v_y$,
+
+\begin{equation}
+\boxed{
+A_{65}
+=
+\frac{
+-2a_1C_{\alpha f}
++
+2a_2C_{\alpha r}
+}
+{I_zv_{x0}}
+}.
+\end{equation}
+
+Differentiating with respect to $r$,
+
+\begin{equation}
+\boxed{
+A_{66}
+=
+-\frac{
+2a_1^2C_{\alpha f}
++
+2a_2^2C_{\alpha r}
+}
+{I_zv_{x0}}
+}.
+\end{equation}
+
+Therefore,
+
+\begin{equation}
+\boxed{
+A=
+\begin{bmatrix}
+0 &
+0 &
+-v_{x0}\sin\psi_0-v_{y0}\cos\psi_0 &
+\cos\psi_0 &
+-\sin\psi_0 &
+0
+\\[1mm]
+0 &
+0 &
+v_{x0}\cos\psi_0-v_{y0}\sin\psi_0 &
+\sin\psi_0 &
+\cos\psi_0 &
+0
+\\[1mm]
+0&0&0&0&0&1
+\\[1mm]
+0&0&0&0&r_0&v_{y0}
+\\[1mm]
+0&0&0&A_{54}&
+-\dfrac{2C_{\alpha f}+2C_{\alpha r}}{mv_{x0}}&
+\dfrac{-2a_1C_{\alpha f}+2a_2C_{\alpha r}}{mv_{x0}}
+-v_{x0}
+\\[4mm]
+0&0&0&A_{64}&
+\dfrac{-2a_1C_{\alpha f}+2a_2C_{\alpha r}}{I_zv_{x0}}&
+-\dfrac{2a_1^2C_{\alpha f}+2a_2^2C_{\alpha r}}
+{I_zv_{x0}}
+\end{bmatrix}
+}.
+\end{equation}
+
+%====================================================================
+\section{Derivation of the $B$ Matrix}
+
+The input vector is
+
+\begin{equation}
+\bm{u}
+=
+\begin{bmatrix}
+\delta\\
+a_{cmd}
+\end{bmatrix}.
+\end{equation}
+
+The steering angle $\delta$ enters the lateral-velocity equation through
+
+\begin{equation}
+\frac{2C_{\alpha f}}{m}\delta.
+\end{equation}
+
+Therefore,
+
+\begin{equation}
+\frac{\partial\dot v_y}{\partial\delta}
+=
+\frac{2C_{\alpha f}}{m}.
+\end{equation}
+
+Similarly, the steering angle enters the yaw-rate equation through
+
+\begin{equation}
+\frac{2a_1C_{\alpha f}}{I_z}\delta.
+\end{equation}
+
+Therefore,
+
+\begin{equation}
+\frac{\partial\dot r}{\partial\delta}
+=
+\frac{2a_1C_{\alpha f}}{I_z}.
+\end{equation}
+
+The longitudinal acceleration command appears in
+
+\begin{equation}
+\dot v_x
+=
+a_{cmd}
+-\mu_{rr}g\cos\theta
+-g\sin\theta
++v_yr.
+\end{equation}
+
+Therefore,
+
+\begin{equation}
+\frac{\partial\dot v_x}{\partial a_{cmd}}
+=
+1.
+\end{equation}
+
+Hence,
+
+\begin{equation}
+\boxed{
+B
+=
+\begin{bmatrix}
+0&0\\
+0&0\\
+0&0\\
+0&1\\
+\dfrac{2C_{\alpha f}}{m}&0\\
+\dfrac{2a_1C_{\alpha f}}{I_z}&0
+\end{bmatrix}
+}.
+\end{equation}
+
+%====================================================================
+\section{Unmodelled-Force Disturbance Matrix}
+
+The unmodelled-force disturbance vector is
+
+\begin{equation}
+\boxed{
+\bm{d}_{um}
+=
+\begin{bmatrix}
+\Delta F_{x,\mathrm{frict}}\\
+\Delta F_{yf}\\
+\Delta F_{yr}
+\end{bmatrix}
+}.
+\end{equation}
+
+The longitudinal-force disturbance contributes
+
+\begin{equation}
+\Delta\dot v_x
+=
+\frac{\Delta F_{x,\mathrm{frict}}}{m}.
+\end{equation}
+
+The lateral-force disturbances contribute
+
+\begin{equation}
+\Delta\dot v_y
+=
+\frac{
+\Delta F_{yf}
++
+\Delta F_{yr}
+}{m}.
+\end{equation}
+
+The yaw-rate disturbance contribution is
+
+\begin{equation}
+\Delta\dot r
+=
+\frac{
+a_1\Delta F_{yf}
+-
+a_2\Delta F_{yr}
+}{I_z}.
+\end{equation}
+
+Therefore,
+
+\begin{equation}
+\boxed{
+B_{ud}
+=
+\begin{bmatrix}
+0&0&0\\
+0&0&0\\
+0&0&0\\
+\dfrac{1}{m}&0&0\\
+0&\dfrac{1}{m}&\dfrac{1}{m}\\
+0&\dfrac{a_1}{I_z}&-\dfrac{a_2}{I_z}
+\end{bmatrix}
+}.
+\end{equation}
+
+The modeled disturbance vector in the handwritten notes is
+
+\begin{equation}
+\boxed{
+\bm{d}_m
+=
+\begin{bmatrix}
+\delta_{\mathrm{user}}\\
+\theta_{\mathrm{grade}}
+\end{bmatrix}
+}.
+\end{equation}
+
+Accordingly, $B_{md}$ represents the corresponding modeled-disturbance
+input matrix.
+
+%====================================================================
+\section{Output Equation}
+
+The output matrix selects $X$, $Y$, and $\psi$:
+
+\begin{equation}
+\boxed{
+C
+=
+\begin{bmatrix}
+1&0&0&0&0&0\\
+0&1&0&0&0&0\\
+0&0&1&0&0&0
+\end{bmatrix}
+}.
+\end{equation}
+
+For zero direct feedthrough,
+
+\begin{equation}
+\boxed{
+D=0
+}.
+\end{equation}
+
+Hence,
+
+\begin{equation}
+\boxed{
+\bm{y}
+=
+C\bm{x}
++
+D\bm{u}
+=
+C\bm{x}
+}.
+\end{equation}
+
+%====================================================================
+\section{Final Corrected Continuous Model}
+
+The complete corrected continuous vehicle model is
+
+\begin{equation}
+\boxed{
+\begin{aligned}
+\dot X
+&=
+v_x\cos\psi-v_y\sin\psi,
+\\[2mm]
+\dot Y
+&=
+v_x\sin\psi+v_y\cos\psi,
+\\[2mm]
+\dot\psi
+&=
+r,
+\\[2mm]
+\dot v_x
+&=
+a_{cmd}
+-\mu_{rr}g\cos\theta
+-g\sin\theta
++v_yr,
+\\[2mm]
+\dot v_y
+&=
+-v_y
+\left(
+\frac{2C_{\alpha f}+2C_{\alpha r}}
+{mv_x}
+\right)
++
+r
+\left(
+\frac{-2a_1C_{\alpha f}+2a_2C_{\alpha r}}
+{mv_x}
+-v_x
+\right)
++
+\frac{2C_{\alpha f}}{m}\delta,
+\\[2mm]
+\dot r
+&=
+\frac{-2a_1C_{\alpha f}+2a_2C_{\alpha r}}
+{I_zv_x}v_y
+-
+\frac{
+2a_1^2C_{\alpha f}
++
+2a_2^2C_{\alpha r}
+}
+{I_zv_x}r
++
+\frac{2a_1C_{\alpha f}}{I_z}\delta.
+\end{aligned}
+}
+\end{equation}
+
+\end{document}
