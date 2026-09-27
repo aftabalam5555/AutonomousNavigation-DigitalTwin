@@ -7,5 +7,5 @@ Brief Description:
 
 A. Major Objectives (MOx)
 	MO1. Auotomatic navigation of an EV with AWD (Four Motor Powered Wheeels)
-	MO2. Sell the project to an interested party with with 5 years after sell support
+	MO2. Sell the project to an interested party with 5 years after sales support
 	MO3. Make a minimum revenue generation in profit of 20Cr +
